@@ -1,0 +1,31 @@
+---
+- name: install base packages
+  hosts: all
+  gather_facts: True
+  become: yes
+
+  vars:
+    accounts_sshd_configs:
+    - key: PermitRootLogin
+      value: 'no'
+    - key: AuthenticationMethods
+      value: 'publickey'
+
+  pre_tasks:
+  - name: check for file custom_vars.yml
+    stat:
+      path: custom_vars.yml
+    register: stat_custom_vars
+  - name: load custom vars, if existent
+    include_vars:
+      file: custom_vars.yml
+    when: stat_custom_vars.stat.exists
+
+  roles:
+  - { role: base-packages, tags: ["base-packages"] }
+  - { role: andrelohmann.root_colored_prompt, tags: ["root"] }
+  - { role: andrelohmann.accounts, tags: ["accounts"] }
+
+
+
+...

@@ -1,0 +1,11 @@
+---
+accounts_users:
+- name: your_name
+  uid: 4000
+  state: present
+  group: sudo
+  public_keys:
+  - key: ssh-rsa AAA...
+    host: Some Host
+    state: present
+...

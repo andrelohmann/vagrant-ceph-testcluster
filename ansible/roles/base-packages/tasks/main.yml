@@ -1,0 +1,89 @@
+---
+
+- name: apt-get update
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: install packages
+  apt:
+    name: "{{item}}"
+    state: latest
+    dpkg_options: 'force-confnew,force-confdef'
+    autoremove: yes
+  with_items:
+  - sudo
+  - nano
+  - screen
+  - htop
+  - ethstatus
+  - jnettop
+  - iotop
+  - sysstat
+  - strace
+  - lsof
+  - nmap
+  - nmon
+  - powertop
+  - smartmontools
+  - ntp
+  - ntpdate
+  - curl
+  - apt-transport-https
+
+- name: uninstall python-openssl
+  apt:
+    name: "{{item}}"
+    state: absent
+    dpkg_options: 'force-confnew,force-confdef'
+    autoremove: yes
+  with_items:
+  - python-openssl
+
+- name: uninstall python-openssl
+  pip:
+    name: pyopenssl
+
+- name: add motd file
+  copy:
+    src: motd
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: 0644
+
+- name: add some additional boot information to the bootscreen
+  blockinfile:
+    dest: /etc/skel/.profile
+    block: |
+      w # uptime information and who is logged in
+      echo "" # for spacing
+      df -h -x tmpfs -x udev # disk usage, minus def and swap
+
+- name: allow sudo without password
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: "^%sudo"
+    line: "%sudo  ALL=(ALL:ALL) NOPASSWD:ALL"
+    state: present
+
+- name: apt-get dist-upgrade
+  apt:
+    upgrade: dist
+    update_cache: yes
+    cache_valid_time: 3600
+    dpkg_options: 'force-confold,force-confdef'
+
+- name: check if a reboot is required
+  shell: "[ -f /var/run/reboot-required ]"
+  failed_when: False
+  register: reboot_required
+  changed_when: reboot_required.rc == 0
+
+- name: apt-get autoremove
+  apt:
+    autoremove: yes
+    update_cache: yes
+    cache_valid_time: 3600
+
+...

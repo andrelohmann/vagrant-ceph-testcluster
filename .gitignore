@@ -1,0 +1,7 @@
+/.vagrant
+/ansible/roles/andrelohmann.accounts
+/ansible/roles/andrelohmann.root_colored_prompt
+/ansible/custom_vars.yml
+.DS_Store
+*.retry
+*.log

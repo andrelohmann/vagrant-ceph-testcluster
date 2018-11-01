@@ -1,0 +1,8 @@
+---
+- src: https://github.com/andrelohmann/ansible-role-accounts
+  version: 1.2.0
+  name: andrelohmann.accounts
+- src: https://github.com/andrelohmann/ansible-role-root_colored_prompt
+  version: 1.0.0
+  name: andrelohmann.root_colored_prompt
+...
